@@ -9,6 +9,7 @@ include_directories(/opt/arduino-1.8.2/hardware/arduino/avr/cores/arduino)
 include_directories(/opt/arduino-1.8.2/hardware/arduino/variants/micro)
 include_directories(/opt/arduino-1.8.2/hardware/arduino/avr/libraries/EEPROM/src)
 include_directories(/opt/arduino-1.8.2/hardware/arduino/avr/libraries/SPI/src)
+include_directories(/opt/arduino-1.8.2/hardware/tools/avr/avr/include/avr/)
 #include_directories(../log)
 set(SOURCE_FILES src/imagedata.cpp src/e-ink-display.cpp src/epdif.cpp src/font8.c
         src/font12.c
@@ -16,7 +17,7 @@ set(SOURCE_FILES src/imagedata.cpp src/e-ink-display.cpp src/epdif.cpp src/font8
         src/font20.c
         src/font24.c
         src/e-ink.cpp
-        src/fonts.h)
+        src/fonts.h examples/fake_main.cpp)
 #set(SOURCE_FILES test/main.cpp )
 
 add_executable(eink ${SOURCE_FILES})

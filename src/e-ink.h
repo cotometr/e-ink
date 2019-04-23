@@ -120,8 +120,12 @@ class Epd : EpdIf {
 public:
     int width;
     int height;
+//    reset_pin = RST_PIN;
+//    dc_pin = DC_PIN;
+//    cs_pin = CS_PIN;
+//    busy_pin = BUSY_PIN;
 
-    Epd();
+    Epd(unsigned int  dc = DC_PIN, unsigned int  cs = CS_PIN, unsigned int  reset = RST_PIN, unsigned int  busy = BUSY_PIN);
     ~Epd();
     int  Init(void);
     void SendCommand(unsigned char command);
@@ -136,7 +140,7 @@ public:
 private:
     unsigned int dc_pin;
     unsigned int cs_pin;
-    unsigned int reset_pin;
+    //unsigned int reset_pin;
     unsigned int busy_pin;
 };
 

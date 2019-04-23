@@ -14,7 +14,8 @@
 
 #elif defined( AVR )
 #define RST_PIN         8
-#define DC_PIN          9
+//#define DC_PIN          9
+#define DC_PIN          6
 #define CS_PIN          10
 #define BUSY_PIN        7
 

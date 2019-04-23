@@ -243,11 +243,12 @@ const unsigned char lut_partial_update[] =
 Epd::~Epd() {
 };
 
-Epd::Epd() {
-    reset_pin = RST_PIN;
-    dc_pin = DC_PIN;
-    cs_pin = CS_PIN;
-    busy_pin = BUSY_PIN;
+Epd::Epd(unsigned int dc, unsigned int  cs, unsigned int reset, unsigned int busy)
+        :dc_pin(dc), cs_pin(cs),  busy_pin(busy) {
+//    reset_pin = RST_PIN;
+    //dc_pin = DC_PIN;
+//    cs_pin = CS_PIN;
+//    busy_pin = BUSY_PIN;
     width = EPD_WIDTH;
     height = EPD_HEIGHT;
 };

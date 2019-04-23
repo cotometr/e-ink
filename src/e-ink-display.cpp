@@ -89,16 +89,16 @@ void Paint::SetRotate(int rotate){
 /**
  *  @brief: this draws a pixel by the coordinates
  */
-void Paint::DrawPixel(int x, int y, int colored) {
+int Paint::DrawPixel(int x, int y, int colored) {
     int point_temp;
     if (this->rotate == ROTATE_0) {
         if(x < 0 || x >= this->width || y < 0 || y >= this->height) {
-            return;
+            return - 1;
         }
         DrawAbsolutePixel(x, y, colored);
     } else if (this->rotate == ROTATE_90) {
         if(x < 0 || x >= this->height || y < 0 || y >= this->width) {
-          return;
+          return - 1;
         }
         point_temp = x;
         x = this->width - y;
@@ -106,26 +106,28 @@ void Paint::DrawPixel(int x, int y, int colored) {
         DrawAbsolutePixel(x, y, colored);
     } else if (this->rotate == ROTATE_180) {
         if(x < 0 || x >= this->width || y < 0 || y >= this->height) {
-          return;
+          return -1;
         }
         x = this->width - x;
         y = this->height - y;
         DrawAbsolutePixel(x, y, colored);
     } else if (this->rotate == ROTATE_270) {
         if(x < 0 || x >= this->height || y < 0 || y >= this->width) {
-          return;
+          return - 1;
         }
         point_temp = x;
         x = y;
         y = this->height - point_temp;
         DrawAbsolutePixel(x, y, colored);
     }
+
+    return 0;
 }
 
 /**
  *  @brief: this draws a charactor on the frame buffer but not refresh
  */
-void Paint::DrawCharAt(int x, int y, char ascii_char, sFONT* font, int colored) {
+int Paint::DrawCharAt(int x, int y, char ascii_char, sFONT* font, int colored) {
     int i, j;
     unsigned int char_offset = (ascii_char - ' ') * font->Height * (font->Width / 8 + (font->Width % 8 ? 1 : 0));
     const unsigned char* ptr = &font->table[char_offset];
@@ -133,7 +135,8 @@ void Paint::DrawCharAt(int x, int y, char ascii_char, sFONT* font, int colored) 
     for (j = 0; j < font->Height; j++) {
         for (i = 0; i < font->Width; i++) {
             if (pgm_read_byte(ptr) & (0x80 >> (i % 8))) {
-                DrawPixel(x + i, y + j, colored);
+                if ( DrawPixel(x + i, y + j, colored) < 0 )
+                    return -1;
             }
             if (i % 8 == 7) {
                 ptr++;
@@ -143,6 +146,8 @@ void Paint::DrawCharAt(int x, int y, char ascii_char, sFONT* font, int colored) 
             ptr++;
         }
     }
+
+    return 0;
 }
 
 /**
@@ -156,7 +161,7 @@ void Paint::DrawStringAt(int x, int y, const char* text, sFONT* font, int colore
     /* Send the string character by character on EPD */
     while (*p_text != 0) {
         /* Display one character on EPD */
-       //DrawCharAt(refcolumn, y, *p_text, font, colored);
+        DrawCharAt(refcolumn, y, *p_text, font, colored);
         /* Decrement the column position by 16 */
         refcolumn += font->Width;
         /* Point on the next character */
