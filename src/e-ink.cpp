@@ -89,45 +89,53 @@ void Epd::SetLut(const unsigned char* lut) {
  *  @brief: put an image buffer to the frame memory.
  *          this won't update the display.
  */
-void Epd::SetFrameMemory(
+int Epd::SetFrameMemory(
     const unsigned char* image_buffer,
+    const int image_buf_len,
     int x,
     int y,
     int image_width,
-    int image_height
+    int image_height,
+    bool is_progmem
 ) {
     int x_end;
     int y_end;
 
-    if (
-        image_buffer == NULL ||
-        x < 0 || image_width < 0 ||
-        y < 0 || image_height < 0
-    ) {
-        return;
+    if ((x + image_width > this->width) || (y + image_height > this->height)) {
+//        Serial.println("Out of the screen!, x=" + String(x) + "i_w=" + String(image_width) + "w="
+//                        + String(width) + "y=" + String(y)  + "i_h=" + String(image_height) + "h="
+//        + String(height));
+
+        return -1;
     }
+
+    if (image_buffer == NULL || x < 0 || image_width < 0 || y < 0 || image_height < 0 || ((x & 0x7) != 0)
+        || ((image_width & 0x7) != 0)) {
+//        Serial.println("wr i a, x:" + String(x) + "y:" + String(y));
+        return -1;
+    }
+
     /* x point must be the multiple of 8 or the last 3 bits will be ignored */
-    x &= 0xF8;
-    image_width &= 0xF8;
-    if (x + image_width >= this->width) {
-        x_end = this->width - 1;
-    } else {
-        x_end = x + image_width - 1;
-    }
-    if (y + image_height >= this->height) {
-        y_end = this->height - 1;
-    } else {
-        y_end = y + image_height - 1;
-    }
+//    x &= 0xF8;
+//    image_width &= 0xF8;
+
+    x_end = x + image_width - 1;
+    y_end = y + image_height - 1;
+
     SetMemoryArea(x, y, x_end, y_end);
     SetMemoryPointer(x, y);
     SendCommand(WRITE_RAM);
+    int it = 0;
     /* send the image data */
     for (int j = 0; j < y_end - y + 1; j++) {
         for (int i = 0; i < (x_end - x + 1) / 8; i++) {
-            SendData(image_buffer[i + j * (image_width / 8)]);
+            const unsigned char* immage_pos = &image_buffer[i + j * (image_width / 8)];
+
+            SendData(is_progmem ? pgm_read_byte(immage_pos) : *immage_pos);
+            it += 1;
         }
     }
+//    Serial.println("It count = " + String(it));
 }
 
 /**

@@ -47,12 +47,14 @@ public:
     void SendData(unsigned char data);
     void WaitUntilIdle(void);
     void Reset(void);
-    void SetFrameMemory(
-        const unsigned char* image_buffer,
-        int x,
-        int y,
-        int image_width,
-        int image_height
+    int SetFrameMemory(
+            const unsigned char* image_buffer,
+            const int image_buf_len,
+            int x,
+            int y,
+            int image_width,
+            int image_height,
+            bool is_progmem = false
     );
     void SetFrameMemory(const unsigned char* image_buffer);
     void ClearFrameMemory(unsigned char color);

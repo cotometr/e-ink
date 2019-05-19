@@ -24,6 +24,7 @@ public:
     int  GetRotate(void);
     void SetRotate(int rotate);
     unsigned char* GetImage(void);
+    int Size(void);
     void DrawAbsolutePixel(int x, int y, int colored);
     int DrawPixel(int x, int y, int colored);
     int DrawCharAt(int x, int y, char ascii_char, sFONT* font, int colored);

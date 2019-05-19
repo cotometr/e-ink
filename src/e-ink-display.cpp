@@ -1,3 +1,4 @@
+#include <WString.h>
 #include "e-ink-display.h"
 #include "imagedata.h"
 
@@ -9,6 +10,7 @@
 #include <avr/pgmspace.h>
 #endif
 
+#include <Arduino.h>
 
 Paint::Paint(unsigned char* image, int width, int height) {
     this->rotate = ROTATE_0;
@@ -48,9 +50,9 @@ void Paint::DrawAbsolutePixel(int x, int y, int colored) {
         }
     } else {
         if (colored) {
-            image[(x + y * this->width) / 8] &= ~(0x80 >> (x % 8));
+            image[(x + y * this->width) / 8] &= ~(0x80 >> (x & 0x7));
         } else {
-            image[(x + y * this->width) / 8] |= 0x80 >> (x % 8);
+            image[(x + y * this->width) / 8] |= 0x80 >> (x & 0x7);
         }
     }
 }
@@ -61,6 +63,12 @@ void Paint::DrawAbsolutePixel(int x, int y, int colored) {
 unsigned char* Paint::GetImage(void) {
     return this->image;
 }
+
+int Paint::Size(void)
+{
+    return this->width * this->height * 8;
+}
+
 
 int Paint::GetWidth(void) {
     return this->width;
